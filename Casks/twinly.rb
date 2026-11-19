@@ -4,7 +4,7 @@ cask "twinly" do
 
   url "https://github.com/onlymasumrana/Twinly/releases/download/v#{version}/Twinly.dmg"
   name "Twinly"
-  desc "Run multiple isolated instances of any Mac app and CLI tools side by side"
+  desc "Run multiple isolated instances of any app and CLI tools side by side"
   homepage "https://github.com/onlymasumrana/Twinly"
 
   livecheck do
@@ -12,18 +12,18 @@ cask "twinly" do
     strategy :github_latest
   end
 
-  depends_on macos: ">= :ventura"
+  depends_on macos: :ventura
 
   app "Twinly.app"
-
-  postflight do
-    system_command "/usr/bin/xattr",
-                   args:         ["-dr", "com.apple.quarantine", "#{appdir}/Twinly.app"],
-                   must_succeed: false
-  end
 
   zap trash: [
     "~/Library/Application Support/Twinly",
     "~/Library/Preferences/io.twinly.Twinly.plist",
   ]
+
+  caveats <<~EOS
+    Twinly is an open-source, ad-hoc signed app. If macOS Gatekeeper blocks the first launch, run:
+      xattr -dr com.apple.quarantine "/Applications/Twinly.app"
+    or right-click Twinly.app in /Applications and choose Open.
+  EOS
 end
